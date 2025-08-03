@@ -2,159 +2,251 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Cosmos Landscape</title>
+  <title>FlipVibe - Online Shopping</title>
   <style>
     body {
-      margin: 0;
-      overflow: hidden;
-      background: linear-gradient(to bottom, #0a0a2a, #1e1e5f);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
     }
 
-    canvas {
-      display: block;
-      position: absolute;
-      z-index: 1;
+    h1 {
+      background-color: #0077cc;
+      color: white;
+      padding: 20px;
+      text-align: center;
     }
 
-    .project-node {
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background: radial-gradient(circle, rgba(0, 255, 255, 0.9), transparent);
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
-      animation: orbit 4s linear infinite;
-      cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      padding: 20px;
+      gap: 20px;
     }
 
-    .project-node:hover {
-      transform: scale(1.5);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 1);
+    .card {
+      background-color: white;
+      width: 200px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 10px;
+      transition: 0.3s ease;
     }
 
-    .project-node:nth-child(2n) {
-      animation-delay: 1.5s;
+    .card:hover {
+      transform: scale(1.03);
     }
 
-    .project-node:nth-child(3n) {
-      animation-delay: 3s;
-    }
-
-    @keyframes orbit {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(10px) rotate(360deg); }
-    }
-
-    .grid-ground {
-      position: absolute;
-      bottom: 0;
+    .card img {
       width: 100%;
-      height: 200px;
-      background: repeating-linear-gradient(
-        45deg,
-        rgba(0, 255, 255, 0.1),
-        rgba(0, 255, 255, 0.1) 10px,
-        transparent 10px,
-        transparent 20px
-      );
-      clip-path: polygon(0 100%, 15% 60%, 30% 80%, 45% 50%, 60% 70%, 75% 40%, 90% 60%, 100% 100%);
-      z-index: 2;
-    }
-
-    .horizon-glow {
-      position: absolute;
-      bottom: 200px;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(to top, rgba(0, 255, 255, 0.5), transparent);
-      z-index: 3;
-    }
-
-    .tooltip {
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
-      color: #0ff;
-      padding: 5px 10px;
+      height: 150px;
+      object-fit: cover;
       border-radius: 5px;
-      font-size: 12px;
-      pointer-events: none;
-      z-index: 10;
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin: 10px 0 5px;
+    }
+
+    .price {
+      color: green;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    .rating {
+      color: #ffaa00;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      padding: 6px;
+      border-radius: 5px;
+      margin-top: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background-color: #0077cc;
+    }
+
+    footer {
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .cart {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #0077cc;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    /* Buy Now form modal */
+    .modal {
       display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .modal-content input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .close {
+      float: right;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <canvas id="starCanvas"></canvas>
-  <div class="grid-ground"></div>
-  <div class="horizon-glow"></div>
-  <div class="project-node" style="left: 20%; bottom: 250px;" data-tooltip="Task: Research"></div>
-  <div class="project-node" style="left: 30%; bottom: 220px;" data-tooltip="Task: Design"></div>
-  <div class="project-node" style="left: 40%; bottom: 270px;" data-tooltip="Task: Development"></div>
-  <div class="project-node" style="left: 60%; bottom: 240px;" data-tooltip="Task: Testing"></div>
-  <div class="project-node" style="left: 70%; bottom: 260px;" data-tooltip="Task: Deployment"></div>
-  <div class="tooltip" id="tooltip"></div>
 
-  <script>
-    const canvas = document.getElementById('starCanvas');
-    const ctx = canvas.getContext('2d');
+<h1>FlipVibe - Shop Smart. Shop Better.</h1>
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+<div class="cart" onclick="viewCart()">🛒<span id="cart-count">0</span></div>
 
-    const stars = [];
-    for (let i = 0; i < 150; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height * 0.6,
-        radius: Math.random() * 2.5,
-        opacity: Math.random(),
-        speed: Math.random() * 0.02 + 0.01
-      });
-    }
+<div class="container" id="product-list">
+  <!-- Product cards will be inserted here -->
+</div>
 
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(star => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 255, 255, ${star.opacity})`;
-        ctx.fill();
-        star.opacity += star.speed * (Math.random() > 0.5 ? 1 : -1);
-        if (star.opacity > 1) star.opacity = 1;
-        if (star.opacity < 0) star.opacity = 0;
-      });
-      requestAnimationFrame(drawStars);
-    }
+<!-- Modal for Buy Now -->
+<div id="buyModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Enter Delivery Details</h3>
+    <form id="buyForm" onsubmit="submitOrder(event)">
+      <input type="text" id="buyerName" placeholder="Your Name" required>
+      <textarea id="buyerAddress" placeholder="Delivery Address" required></textarea>
+      <input type="tel" id="buyerPhone" placeholder="Phone Number" pattern="[0-9]{10}" required>
+      <input type="hidden" id="productName">
+      <input type="hidden" id="productPrice">
+      <button type="submit" class="btn">Place Order</button>
+    </form>
+  </div>
+</div>
 
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+<footer>
+  <h3>Contact & Delivery Info</h3>
+  <p><strong>Address:</strong> FlipVibe Store, 123 Market Street, Tech City, India</p>
+  <p><strong>Email:</strong> support@flipvibe.com | <strong>Phone:</strong> +91-98765-43210</p>
+</footer>
+
+<script>
+  const products = [
+    { name: "Digital Camera", price: "$799.99", rating: 4, img: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04" },
+    { name: "Smartphone Z", price: "$699.99", rating: 5, img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" },
+    { name: "Laptop Ultra", price: "$1499.99", rating: 5, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8" },
+    { name: "Sunglasses Premium", price: "$49.99", rating: 4, img: "https://images.pexels.com/photos/974911/pexels-photo-974911.jpeg" },
+    { name: "DSLR Lens", price: "$299.99", rating: 4, img: "https://images.unsplash.com/photo-1575936123452-b67c3203c357" },
+    
+  ];
+
+  let cart = [];
+
+  function renderProducts() {
+    const list = document.getElementById("product-list");
+    list.innerHTML = "";
+
+    products.forEach((product, index) => {
+      const stars = "⭐".repeat(product.rating) + "☆".repeat(5 - product.rating);
+      list.innerHTML += `
+        <div class="card">
+          <img src="${product.img}" alt="${product.name}">
+          <div class="product-name">${product.name}</div>
+          <div class="price">${product.price}</div>
+          <div class="rating">${stars}</div>
+          <button class="btn" onclick="openBuyModal('${product.name}', '${product.price}')">Buy Now</button>
+          <button class="btn" onclick="addToCart(${index})">Add to Cart</button>
+        </div>
+      `;
     });
+  }
 
-    const nodes = document.querySelectorAll('.project-node');
-    const tooltip = document.getElementById('tooltip');
+  function addToCart(index) {
+    cart.push(products[index]);
+    document.getElementById("cart-count").innerText = cart.length;
+    alert(products[index].name + " added to cart.");
+  }
 
-    nodes.forEach(node => {
-      node.addEventListener('mouseover', (e) => {
-        tooltip.textContent = node.dataset.tooltip;
-        tooltip.style.display = 'block';
-        tooltip.style.left = `${e.clientX + 10}px`;
-        tooltip.style.top = `${e.clientY - 30}px`;
+  function viewCart() {
+    if (cart.length === 0) {
+      alert("Cart is empty!");
+    } else {
+      let message = "Items in your cart:\n\n";
+      cart.forEach((item, i) => {
+        message += `${i + 1}. ${item.name} - ${item.price}\n`;
       });
-      node.addEventListener('mouseout', () => {
-        tooltip.style.display = 'none';
-      });
-    });
+      alert(message);
+    }
+  }
 
-    drawStars();
-  </script>
+  // Buy modal functions
+  function openBuyModal(name, price) {
+    document.getElementById("productName").value = name;
+    document.getElementById("productPrice").value = price;
+    document.getElementById("buyModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("buyModal").style.display = "none";
+  }
+
+  function submitOrder(event) {
+    event.preventDefault();
+    const name = document.getElementById("buyerName").value;
+    const address = document.getElementById("buyerAddress").value;
+    const phone = document.getElementById("buyerPhone").value;
+    const product = document.getElementById("productName").value;
+    const price = document.getElementById("productPrice").value;
+
+    alert(`Thank you, ${name}!\nYour order for ${product} (${price}) will be delivered to:\n${address}\nPhone: ${phone}`);
+    closeModal();
+    document.getElementById("buyForm").reset();
+  }
+
+  renderProducts();
+</script>
+
 </body>
 </html>
-
