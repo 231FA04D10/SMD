@@ -1,188 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Landing Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Cosmos Landscape</title>
   <style>
-    * {
+    body {
       margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body, html {
-      font-family: 'Segoe UI', sans-serif;
-      scroll-behavior: smooth;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      background-color: #1a1a1a;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .hero {
+      overflow: hidden;
+      background: linear-gradient(to bottom, #0a0a2a, #1e1e5f);
       height: 100vh;
-      background: linear-gradient(to right, #1a1a1a, #333);
-      color: white;
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 0 20px;
+      font-family: Arial, sans-serif;
     }
-    .hero-content h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
+
+    canvas {
+      display: block;
+      position: absolute;
+      z-index: 1;
     }
-    .hero-content p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-    .hero-content button {
-      padding: 10px 25px;
-      font-size: 1rem;
-      background-color: #ff6600;
-      border: none;
-      color: white;
-      border-radius: 5px;
+
+    .project-node {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.9), transparent);
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+      animation: orbit 4s linear infinite;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    .hero-content button:hover {
-      background-color: #e65c00;
+
+    .project-node:hover {
+      transform: scale(1.5);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 1);
     }
-    section {
-      padding: 60px 20px;
+
+    .project-node:nth-child(2n) {
+      animation-delay: 1.5s;
     }
-    #features {
-      background: #f4f4f4;
-      text-align: center;
+
+    .project-node:nth-child(3n) {
+      animation-delay: 3s;
     }
-    .features-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 30px;
+
+    @keyframes orbit {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(10px) rotate(360deg); }
     }
-    .feature-card {
-      background: white;
-      padding: 40px;
-      width: 200px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      font-size: 1.2rem;
+
+    .grid-ground {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 200px;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 255, 255, 0.1),
+        rgba(0, 255, 255, 0.1) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      clip-path: polygon(0 100%, 15% 60%, 30% 80%, 45% 50%, 60% 70%, 75% 40%, 90% 60%, 100% 100%);
+      z-index: 2;
     }
-    #contact {
-      background-color: #eaeaea;
-      text-align: center;
+
+    .horizon-glow {
+      position: absolute;
+      bottom: 200px;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(to top, rgba(0, 255, 255, 0.5), transparent);
+      z-index: 3;
     }
-    form {
-      max-width: 500px;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    input, textarea {
-      padding: 10px;
-      font-size: 1rem;
+
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: #0ff;
+      padding: 5px 10px;
       border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    form button {
-      background-color: #1a1a1a;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    footer {
-      background-color: #1a1a1a;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    @media (max-width: 600px) {
-      .features-container {
-        flex-direction: column;
-        align-items: center;
-      }
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 10;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">MyBrand</div>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <section id="home" class="hero">
-    <div class="hero-content">
-      <h1>Welcome to MyBrand</h1>
-      <p>Your gateway to amazing experiences.</p>
-      <button onclick="scrollToSection('features')">Learn More</button>
-    </div>
-  </section>
-
-  <section id="features">
-    <h2>Features</h2>
-    <div class="features-container">
-      <div class="feature-card">🚀 Fast</div>
-      <div class="feature-card">🔒 Secure</div>
-      <div class="feature-card">⚙️ Customizable</div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <form onsubmit="submitForm(event)">
-      <input type="text" placeholder="Your Name" required />
-      <input type="email" placeholder="Your Email" required />
-      <textarea placeholder="Your Message" rows="4" required></textarea>
-      <button type="submit">Send</button>
-    </form>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 MyBrand. All rights reserved.</p>
-  </footer>
+  <canvas id="starCanvas"></canvas>
+  <div class="grid-ground"></div>
+  <div class="horizon-glow"></div>
+  <div class="project-node" style="left: 20%; bottom: 250px;" data-tooltip="Task: Research"></div>
+  <div class="project-node" style="left: 30%; bottom: 220px;" data-tooltip="Task: Design"></div>
+  <div class="project-node" style="left: 40%; bottom: 270px;" data-tooltip="Task: Development"></div>
+  <div class="project-node" style="left: 60%; bottom: 240px;" data-tooltip="Task: Testing"></div>
+  <div class="project-node" style="left: 70%; bottom: 260px;" data-tooltip="Task: Deployment"></div>
+  <div class="tooltip" id="tooltip"></div>
 
   <script>
-    function scrollToSection(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const stars = [];
+    for (let i = 0; i < 150; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * 0.6,
+        radius: Math.random() * 2.5,
+        opacity: Math.random(),
+        speed: Math.random() * 0.02 + 0.01
+      });
     }
 
-    function submitForm(event) {
-      event.preventDefault();
-      alert('Thank you for contacting us!');
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 255, ${star.opacity})`;
+        ctx.fill();
+        star.opacity += star.speed * (Math.random() > 0.5 ? 1 : -1);
+        if (star.opacity > 1) star.opacity = 1;
+        if (star.opacity < 0) star.opacity = 0;
+      });
+      requestAnimationFrame(drawStars);
     }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const nodes = document.querySelectorAll('.project-node');
+    const tooltip = document.getElementById('tooltip');
+
+    nodes.forEach(node => {
+      node.addEventListener('mouseover', (e) => {
+        tooltip.textContent = node.dataset.tooltip;
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${e.clientX + 10}px`;
+        tooltip.style.top = `${e.clientY - 30}px`;
+      });
+      node.addEventListener('mouseout', () => {
+        tooltip.style.display = 'none';
+      });
+    });
+
+    drawStars();
   </script>
 </body>
 </html>
